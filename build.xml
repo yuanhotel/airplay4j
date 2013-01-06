@@ -1,0 +1,68 @@
+<!-- Build the Fulfillment stuff -->
+<project name="aika" default="help" basedir=".">
+    <!-- Configure the context PATH for this application -->
+	<property name="src" value="./src" />
+	<property name="lib" value="./lib" />
+	<property name="build" value="./build" />
+	<property name="dest" value="${build}/classes" />
+	<property name="buildlib" value="${build}/lib" />
+	<property name="version" value="3.4.1" />
+	<property name="release" value="${build}/Aika-${version}" />
+	
+	<target name="init">
+	    <path id="third-party">
+			<fileset dir="${lib}">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<mkdir dir="${dest}" />
+		<tstamp />
+	</target>
+
+	<target name="help" description="Prints brief help message to screen">
+		<echo message="usage:" />
+		<echo message="  ant TARGET where TARGET is one of the following:" />
+		<echo message="      build   --- Compiles the Aika sources " />
+		<echo message="      jar     --- Creates the aika.jar file " />
+		<echo message="      clean   --- Cleanup time! " />
+		<echo message="      help    --- This message " />
+	</target>
+
+	<!-- Executable Targets -->
+
+	<target name="build" depends="init" description="compile the generated source">
+		<javac srcdir="${src}" destdir="${dest}" encoding="utf-8" includeantruntime="on">
+			<classpath refid="third-party" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="build" description="Jar the files">
+		<mkdir dir="${buildlib}" />
+		<jar destfile="${buildlib}/Aika.jar" manifest="${lib}/aika.manifest" basedir="${dest}">
+			<fileset dir="${dest}" defaultexcludes="yes">
+				<include name="**/*.class" />
+				<exclude name="**/test/*.class" />
+			</fileset>
+		</jar>
+		<copy todir="${buildlib}">
+			<fileset dir="${lib}" includes="**/*.jar" />
+		</copy>
+	</target>
+
+	
+
+	<target name="clean">
+		<delete dir="${build}" includeEmptyDirs="true"  failonerror="false" />
+	</target>
+
+	<!-- Configure custom Ant tasks for the Manager application -->
+	<path id="Aika.classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${buildlib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+</project>

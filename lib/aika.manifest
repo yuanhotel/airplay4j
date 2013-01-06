@@ -1,0 +1,2 @@
+Class-Path: dd-plist.jar javax.jmdns_3.4.1.jar
+Main-Class: com.yutel.silver.Aika
