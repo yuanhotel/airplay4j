@@ -1,12 +1,13 @@
-package com.yutel.silver.http.handler;
+package com.yutel.sample.handler;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
 import com.yutel.silver.http.HttpWrap;
+import com.yutel.silver.http.handler.HttpHandler;
 
-public class PlayHandler implements HttpHandler {
+public class ScrubHandler implements HttpHandler {
 
 	public void handle(HttpWrap hw) throws IOException {
 		Map<String, String> headers = hw.getRequestHeads();

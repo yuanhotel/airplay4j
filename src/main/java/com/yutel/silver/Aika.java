@@ -10,19 +10,38 @@ import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
 import com.yutel.silver.http.AirplayServer;
-import com.yutel.silver.http.handler.PlayHandler;
-import com.yutel.silver.http.handler.ReverseHandler;
-import com.yutel.silver.http.handler.ServerInfoHandler;
-import com.yutel.silver.util.CommonUtil;
+import com.yutel.silver.http.handler.HttpHandler;
 
 public class Aika {
 	private static Logger logger = Logger.getLogger(Aika.class.getName());
-	private static String type = "_airplay._tcp.local.";
+	private static AirplayServer ah;
 	private static JmDNS jmdns;
-	AirplayServer ah;
+	private static InetAddress mInetAddress;
+	private static String mType = "_airplay._tcp.local.";
+	private static String mName;
+	private HashMap<String, HttpHandler> handlers;
+	private HashMap<String, String> values;
 
-	public static void main(String[] args) {
-		new Aika().start(8888);
+	public Aika(InetAddress inetAddress) {
+		mInetAddress = inetAddress;
+		mName = "aika";
+		handlers = new HashMap<String, HttpHandler>();
+		values = new HashMap<String, String>();
+	}
+
+	public Aika(InetAddress inetAddress, String name) {
+		mInetAddress = inetAddress;
+		mName = name;
+		handlers = new HashMap<String, HttpHandler>();
+		values = new HashMap<String, String>();
+	}
+
+	public void createContext(String key, HttpHandler handler) {
+		handlers.put(key, handler);
+	}
+
+	public void ConfigDivice(String key, String value) {
+		values.put(key, value);
 	}
 
 	public boolean restart(int port) {
@@ -34,20 +53,13 @@ public class Aika {
 		try {
 			// http server
 			ah = new AirplayServer(port);
-			ah.createContext("/reverse", new ReverseHandler());
-			ah.createContext("/server-info", new ServerInfoHandler());
-			ah.createContext("/play", new PlayHandler());
+			ah.setHandlers(handlers);
 			ah.start();
 			// jmdns server
-			InetAddress address = CommonUtil.getAddress();
-			jmdns = JmDNS.create(address);
+			jmdns = JmDNS.create(mInetAddress);
 			logger.log(Level.INFO, "oOpened JmDNS!");
-			final HashMap<String, String> values = new HashMap<String, String>();
-			values.put("deviceid", "58:55:CA:1A:E2:44");
-			values.put("model", "AppleTV2,1");
-			values.put("features", "0x77");
-			ServiceInfo serviceInfo = ServiceInfo.create(type, "AndroidTest",
-					port, 0, 0, values);
+			ServiceInfo serviceInfo = ServiceInfo.create(mType, mName, port, 0,
+					0, values);
 			jmdns.registerService(serviceInfo);
 			logger.log(Level.INFO, "Registered Service as " + serviceInfo);
 			return true;

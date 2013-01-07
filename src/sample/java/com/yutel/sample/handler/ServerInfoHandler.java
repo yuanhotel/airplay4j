@@ -1,10 +1,11 @@
-package com.yutel.silver.http.handler;
+package com.yutel.sample.handler;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
 import com.yutel.silver.http.HttpWrap;
+import com.yutel.silver.http.handler.HttpHandler;
 
 public class ServerInfoHandler implements HttpHandler {
 

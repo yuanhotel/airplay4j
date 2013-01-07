@@ -2,7 +2,6 @@ package com.yutel.silver.http;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +14,7 @@ public class AirplayServer extends Thread {
 	private boolean stop = false;
 	private int mPort;
 	private ServerSocket ss;
-	private Map<String, HttpHandler> handlers;
+	private Map<String, HttpHandler> mHandlers;
 
 	public static void main(String[] args) {
 		new AirplayServer(8888).start();
@@ -23,15 +22,17 @@ public class AirplayServer extends Thread {
 
 	public AirplayServer(int port) {
 		mPort = port;
-		handlers = new HashMap<String, HttpHandler>();
 	}
 
-	public void createContext(String key, HttpHandler handler) {
-		handlers.put(key, handler);
+	public void setHandlers(Map<String, HttpHandler> handlers) {
+		mHandlers = handlers;
 	}
 
 	public HttpHandler getHandler(String key) {
-		return handlers.get(key);
+		if (mHandlers != null) {
+			return mHandlers.get(key);
+		}
+		return null;
 	}
 
 	public void forceStop() {

@@ -1,12 +1,13 @@
-package com.yutel.silver.http.handler;
+package com.yutel.sample.handler;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
 import com.yutel.silver.http.HttpWrap;
+import com.yutel.silver.http.handler.HttpHandler;
 
-public class ReverseHandler implements HttpHandler {
+public class PlayHandler implements HttpHandler {
 
 	public void handle(HttpWrap hw) throws IOException {
 		Map<String, String> headers = hw.getRequestHeads();
@@ -18,9 +19,7 @@ public class ReverseHandler implements HttpHandler {
 
 	private void response(HttpWrap hw) throws IOException {
 		System.out.println("response");
-		hw.getResponseHeads().put("Date", new Date().toString());
-		hw.getResponseHeads().put("Upgrade", "PTTH/1.0");
-		hw.getResponseHeads().put("Connection", "Upgrade");
-		hw.sendResponseHeaders(101, 0);
+		hw.getResponseHeads().put("date", new Date().toString());
+		hw.sendResponseHeaders(200, 0);
 	}
 }
