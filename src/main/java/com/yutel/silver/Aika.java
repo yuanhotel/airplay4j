@@ -84,6 +84,7 @@ public class Aika {
 				ah.forceStop();
 				ah = null;
 			}
+			aika = null;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
