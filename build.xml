@@ -60,7 +60,6 @@
 		<jar destfile="${buildlib}/sample.jar" manifest="${lib}/aika.manifest">
 			<fileset dir="${dest}" defaultexcludes="yes">
 				<include name="**/*.class" />
-				<exclude name="**/silver/*.class" />
 			</fileset>
 		</jar>
 	</target>

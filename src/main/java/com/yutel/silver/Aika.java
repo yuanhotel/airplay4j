@@ -13,27 +13,28 @@ import com.yutel.silver.http.AirplayServer;
 import com.yutel.silver.http.handler.HttpHandler;
 
 public class Aika {
+	private static Aika aika;
 	private static Logger logger = Logger.getLogger(Aika.class.getName());
-	private static AirplayServer ah;
-	private static JmDNS jmdns;
-	private static InetAddress mInetAddress;
-	private static String mType = "_airplay._tcp.local.";
-	private static String mName;
+	private AirplayServer ah;
+	private JmDNS jmdns;
+	private InetAddress mInetAddress;
+	private String mType = "_airplay._tcp.local.";
+	private String mName;
 	private HashMap<String, HttpHandler> handlers;
 	private HashMap<String, String> values;
 
-	public Aika(InetAddress inetAddress) {
+	private Aika(InetAddress inetAddress, String name) {
 		mInetAddress = inetAddress;
-		mName = "aika";
+		mName = name == null ? "aika" : name;
 		handlers = new HashMap<String, HttpHandler>();
 		values = new HashMap<String, String>();
 	}
 
-	public Aika(InetAddress inetAddress, String name) {
-		mInetAddress = inetAddress;
-		mName = name;
-		handlers = new HashMap<String, HttpHandler>();
-		values = new HashMap<String, String>();
+	public static Aika getInstance(InetAddress inetAddress, String name) {
+		if (aika == null) {
+			aika = new Aika(inetAddress, name);
+		}
+		return aika;
 	}
 
 	public void createContext(String key, HttpHandler handler) {
