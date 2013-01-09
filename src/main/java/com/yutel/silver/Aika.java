@@ -15,7 +15,7 @@ import com.yutel.silver.http.handler.HttpHandler;
 public class Aika {
 	private static Aika aika;
 	private static Logger logger = Logger.getLogger(Aika.class.getName());
-	private AirplayServer ah;
+	private AirplayServer as;
 	private JmDNS jmdns;
 	private InetAddress mInetAddress;
 	private String mType = "_airplay._tcp.local.";
@@ -53,9 +53,9 @@ public class Aika {
 	public boolean start(int port) {
 		try {
 			// http server
-			ah = new AirplayServer(port);
-			ah.setHandlers(handlers);
-			ah.start();
+			as = new AirplayServer(port);
+			as.setHandlers(handlers);
+			as.start();
 			// jmdns server
 			jmdns = JmDNS.create(mInetAddress);
 			logger.log(Level.INFO, "oOpened JmDNS!");
@@ -80,9 +80,9 @@ public class Aika {
 				jmdns = null;
 			}
 			// http
-			if (ah != null) {
-				ah.forceStop();
-				ah = null;
+			if (as != null) {
+				as.forceStop();
+				as = null;
 			}
 			aika = null;
 		} catch (Exception e) {

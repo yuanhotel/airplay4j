@@ -22,24 +22,23 @@ public class AirplayUtil {
 
 	private static String serverInfo() {
 		res.setLength(0);
-		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
 		res.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\"");
-		res.append(" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
-		res.append("<plist version=\"1.0\">");
-		res.append(" <dict>");
-		res.append("  <key>deviceid</key>");
-		res.append("  <string>%1$s</string>");
-		res.append("  <key>features</key>");
-		res.append("  <integer>%2$S</integer>");
-		res.append("  <key>model</key>");
-		res.append("  <string>%3$s</string>");
-		res.append("  <key>protovers</key>");
-		res.append("  <string>%4$s</string>");
-		res.append("  <key>srcvers</key>");
-		res.append("  <string>%5$s</string>");
-		res.append(" </dict>");
-		res.append("</plist>");
-		res.append("\r\n");
+		res.append(" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n");
+		res.append("<plist version=\"1.0\">\r\n");
+		res.append(" <dict>\r\n");
+		res.append("  <key>deviceid</key>\r\n");
+		res.append("  <string>%1$s</string>\r\n");
+		res.append("  <key>features</key>\r\n");
+		res.append("  <integer>%2$S</integer>\r\n");
+		res.append("  <key>model</key>\r\n");
+		res.append("  <string>%3$s</string>\r\n");
+		res.append("  <key>protovers</key>\r\n");
+		res.append("  <string>%4$s</string>\r\n");
+		res.append("  <key>srcvers</key>\r\n");
+		res.append("  <string>%5$s</string>\r\n");
+		res.append(" </dict>\r\n");
+		res.append("</plist>\r\n");
 		return res.toString();
 	}
 

@@ -5,7 +5,6 @@ import java.net.Socket;
 
 import com.yutel.silver.http.handler.HttpHandler;
 
-
 public class HttpClient extends Thread {
 	private Socket mSocket;
 	private AirplayServer mAirplayHttp;
@@ -17,22 +16,26 @@ public class HttpClient extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			// 读取HTTP请求信息
-			HttpWrap hw = new HttpWrap();
-			hw.extract(mSocket);
-			HttpHandler handler = mAirplayHttp.getHandler(hw.getContext());
-			if (handler != null) {
-				handler.handle(hw);
-			} else {
-				System.out.println("context \"" + hw.getContext()
-						+ "\" is not find!");
+		while (true) {
+			try {
+				// 读取HTTP请求信息
+				HttpWrap hw = new HttpWrap();
+				if (hw.extract(mSocket)) {
+					HttpHandler handler = mAirplayHttp.getHandler(hw
+							.getContext());
+					if (handler != null) {
+						handler.handle(hw);
+					} else {
+						System.out.println("context \"" + hw.getContext()
+								+ "\" is not find!");
+					}
+				}
+				sleep(1000);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			mSocket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

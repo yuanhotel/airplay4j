@@ -20,8 +20,6 @@ public class ReverseHandler implements HttpHandler {
 	private void response(HttpWrap hw) throws IOException {
 		System.out.println("response");
 		hw.getResponseHeads().put("Date", new Date().toString());
-		hw.getResponseHeads().put("Upgrade", "PTTH/1.0");
-		hw.getResponseHeads().put("Connection", "Upgrade");
-		hw.sendResponseHeaders(101, 0);
+		hw.sendResponseHeaders(404, 0);
 	}
 }
