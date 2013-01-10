@@ -1,6 +1,8 @@
 package com.yutel.silver.http;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,19 +25,56 @@ public class HttpWrap {
 			OutputStream os = socket.getOutputStream(); // 获得输入流
 			entry.requestBody = is;
 			entry.responseBody = os;
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String tempbf = br.readLine();
-			if (tempbf != null) {
-				fistline(tempbf);
-				logger.info("fistline=" + tempbf);
-				while ((tempbf = br.readLine()) != null) {
-					if (!"".equals(tempbf.trim())) {
-						header(tempbf);
-					} else {
-						break;
-					}
+			int bufsize = 8192;
+			byte[] buf = new byte[bufsize];
+			int rlen = is.read(buf, 0, bufsize);
+			if (rlen <= 0) {
+				return false;
+			}
+			logger.info("rlen=" + rlen);
+			// We are looking for the byte separating header from body.
+			// It must be the last byte of the first two sequential new lines.
+			int splitbyte = 0;
+			boolean sbfound = false;
+			while (splitbyte < rlen) {
+				if (buf[splitbyte] == '\r' && buf[++splitbyte] == '\n'
+						&& buf[++splitbyte] == '\r' && buf[++splitbyte] == '\n') {
+					sbfound = true;
+					break;
 				}
-				logger.info("extract is finished!");
+				splitbyte++;
+			}
+			splitbyte++;
+			logger.info("splitbyte=" + splitbyte);
+			// Write the part of body already read to ByteArrayOutputStream f
+			ByteArrayOutputStream f = new ByteArrayOutputStream();
+			if (splitbyte <= rlen) {
+				// head
+				f.write(buf, 0, splitbyte);
+				byte[] fbuf = f.toByteArray();
+				ByteArrayInputStream bin = new ByteArrayInputStream(fbuf);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						bin));
+				String tempbf = in.readLine();
+				if (tempbf == null || tempbf.length() < 1) {
+					return false;
+				}
+				logger.info("fistline=" + tempbf);
+				fistline(tempbf);
+				tempbf = in.readLine();
+				while (tempbf != null && tempbf.length() > 0) {
+					header(tempbf);
+					tempbf = in.readLine();
+				}
+				logger.info("header parse compled");
+				// body
+				if (sbfound) {
+					int len = rlen - splitbyte;
+					byte[] body = new byte[len];
+					System.arraycopy(buf, splitbyte, body, 0, len);
+					entry.setRequestBodys(body);
+					logger.info("body.size=" + entry.requestBodys.length);
+				}
 				return true;
 			}
 			return false;
@@ -103,6 +142,10 @@ public class HttpWrap {
 		return entry.requestBody;
 	}
 
+	public byte[] getRequestBodys() {
+		return entry.requestBodys;
+	}
+
 	public OutputStream getResponseBody() {
 		return entry.responseBody;
 	}
@@ -130,6 +173,7 @@ public class HttpWrap {
 	public class Entry {
 		private Map<String, String> requestHeads = new HashMap<String, String>();
 		private Map<String, String> responseHeads = new HashMap<String, String>();
+		private byte[] requestBodys;
 		private InputStream requestBody;
 		private OutputStream responseBody;
 
@@ -147,6 +191,14 @@ public class HttpWrap {
 
 		public void setResponseHeads(Map<String, String> responseHeads) {
 			this.responseHeads = responseHeads;
+		}
+
+		public byte[] getRequestBodys() {
+			return requestBodys;
+		}
+
+		public void setRequestBodys(byte[] requestBodys) {
+			this.requestBodys = requestBodys;
 		}
 
 		public InputStream getRequestBody() {

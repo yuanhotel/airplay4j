@@ -1,7 +1,6 @@
 package com.yutel.sample.handler;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Map;
 
@@ -18,9 +17,8 @@ public class PlayHandler implements HttpHandler {
 			System.out.println("name=" + item.getKey() + ",value="
 					+ item.getValue());
 		}
-		InputStream is = hw.getRequestBody();
 		try {
-			NSObject plist = PropertyListParser.parse(is);
+			NSObject plist = PropertyListParser.parse(hw.getRequestBodys());
 			System.out.println(plist.toXMLPropertyList());
 		} catch (Exception e) {
 			e.printStackTrace();
