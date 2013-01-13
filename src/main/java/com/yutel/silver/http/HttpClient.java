@@ -1,8 +1,8 @@
 package com.yutel.silver.http;
 
-import java.io.IOException;
 import java.net.Socket;
 
+import com.yutel.silver.exception.AirplayException;
 import com.yutel.silver.http.handler.HttpHandler;
 
 public class HttpClient extends Thread {
@@ -31,7 +31,7 @@ public class HttpClient extends Thread {
 					}
 				}
 				sleep(1000);
-			} catch (IOException e) {
+			} catch (AirplayException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
 				e.printStackTrace();

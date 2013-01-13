@@ -37,4 +37,17 @@ public class InetAddressUtil {
 		sb.append((ipInt >> 24) & 0xFF);
 		return sb.toString();
 	}
+
+	public static byte[] Ip2Byte(String strIp) {
+		String[] ss = strIp.split("\\.");
+		if (ss.length == 4) {
+			byte[] bytes = new byte[ss.length];
+			for (int i = 0; i < bytes.length; i++) {
+				bytes[i] = (byte) Integer.parseInt(ss[i]);
+			}
+			return bytes;
+		}
+		return null;
+	}
+
 }

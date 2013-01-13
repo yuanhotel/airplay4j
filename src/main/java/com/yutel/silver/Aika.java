@@ -1,92 +1,56 @@
 package com.yutel.silver;
 
-import java.io.IOException;
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceInfo;
-
-import com.yutel.silver.http.AirplayServer;
+import com.yutel.silver.exception.AirplayException;
 import com.yutel.silver.http.handler.HttpHandler;
+import com.yutel.silver.vo.Device;
 
-public class Aika {
-	private static Aika aika;
-	private static Logger logger = Logger.getLogger(Aika.class.getName());
-	private AirplayServer as;
-	private JmDNS jmdns;
-	private InetAddress mInetAddress;
-	private String mType = "_airplay._tcp.local.";
-	private String mName;
-	private HashMap<String, HttpHandler> handlers;
-	private HashMap<String, String> values;
+public abstract class Aika {
+	public static final String VERSION = "1.0";
 
-	private Aika(InetAddress inetAddress, String name) {
-		mInetAddress = inetAddress;
-		mName = name == null ? "aika" : name;
-		handlers = new HashMap<String, HttpHandler>();
-		values = new HashMap<String, String>();
+	public static Aika create(InetAddress inetAddress, int port) {
+		return new AikaImpl(inetAddress, port, null);
 	}
 
-	public static Aika getInstance(InetAddress inetAddress, String name) {
-		if (aika == null) {
-			aika = new Aika(inetAddress, name);
-		}
-		return aika;
+	public static Aika create(InetAddress inetAddress, int port, String name) {
+		return new AikaImpl(inetAddress, port, name);
 	}
 
-	public void createContext(String key, HttpHandler handler) {
-		handlers.put(key, handler);
-	}
+	public abstract AikaProxy getAikaProxy();
 
-	public void ConfigDivice(String key, String value) {
-		values.put(key, value);
-	}
+	public abstract void setConnectListener(AikaConnectListener listener);
+
+	public abstract AikaConnectListener getConnectListener();
+
+	public abstract void setControlListener(AikaControlListener listener);
+
+	public abstract AikaControlListener getControlListener();
+
+	public abstract void createContext(String key, HttpHandler handler);
+
+	public abstract void config(Device device);
 
 	public boolean restart(int port) {
 		stop();
-		return start(port);
+		return start();
 	}
 
-	public boolean start(int port) {
-		try {
-			// http server
-			as = new AirplayServer(port);
-			as.setHandlers(handlers);
-			as.start();
-			// jmdns server
-			jmdns = JmDNS.create(mInetAddress);
-			logger.log(Level.INFO, "oOpened JmDNS!");
-			ServiceInfo serviceInfo = ServiceInfo.create(mType, mName, port, 0,
-					0, values);
-			jmdns.registerService(serviceInfo);
-			logger.log(Level.INFO, "Registered Service as " + serviceInfo);
-			return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-			stop();
-			return false;
-		}
+	public abstract boolean start();
+
+	public abstract void stop();
+
+	public interface AikaConnectListener {
+		public void video(String url, String rate, String pos)
+				throws AirplayException;
+
+		public void photo() throws AirplayException;
 	}
 
-	public void stop() {
-		try {
-			// jmdns
-			if (jmdns != null) {
-				jmdns.unregisterAllServices();
-				jmdns.close();
-				jmdns = null;
-			}
-			// http
-			if (as != null) {
-				as.forceStop();
-				as = null;
-			}
-			aika = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public interface AikaControlListener {
+
+		public void videoStop() throws AirplayException;
+
+		public void videoPause() throws AirplayException;
 	}
 }
