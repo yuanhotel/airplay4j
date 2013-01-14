@@ -43,12 +43,15 @@ public class AirplayServer extends Thread {
 	public void run() {
 		try {
 			ss = new ServerSocket(mPort);
-			logger.log(Level.INFO, "Http server started!");
+			logger.log(Level.INFO, "Http server started listening:" + mPort);
 			while (!stop) {
 				final Socket socket = ss.accept();
 				String ip = socket.getInetAddress().getHostAddress();
 				logger.log(Level.INFO, "client:" + ip + "/" + socket.getPort());
 				new HttpClient(socket, this).start();
+			}
+			if (stop) {
+				ss.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

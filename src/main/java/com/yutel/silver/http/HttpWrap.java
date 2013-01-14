@@ -103,7 +103,9 @@ public class HttpWrap {
 			entry.responseBody.write(("Content-Length: " + length
 					+ HttpProtocol.CRLF + HttpProtocol.CRLF).getBytes());
 			if (length == 0) {
-				entry.responseBody.write((HttpProtocol.CRLF).getBytes());
+				entry.responseBody
+						.write((HttpProtocol.CRLF + HttpProtocol.CRLF)
+								.getBytes());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
