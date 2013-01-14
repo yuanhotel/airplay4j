@@ -15,9 +15,7 @@ public class PlayHandler extends BaseHttpHandler {
 	}
 
 	public void handle(HttpWrap hw) throws AirplayException {
-		System.out.println("head:" + hw.getRequestHeads());
 		try {
-			System.out.println("start :NSD");
 			String body = hw.getRequestHeads().get("Content-Length");
 			int len = StringUtil.toInteger(body);
 			if (len > 0) {
@@ -25,14 +23,12 @@ public class PlayHandler extends BaseHttpHandler {
 				hw.getRequestBody().read(data);
 				NSDictionary rootDict = (NSDictionary) PropertyListParser
 						.parse(data);
-				System.out.println("end :NSD");
 				String url = rootDict.objectForKey("Content-Location")
 						.toString();
 				String rate = rootDict.objectForKey("rate").toString();
 				String pos = rootDict.objectForKey("Start-Position").toString();
-				System.out.println("url=" + url + ",rate=" + rate);
 				if (mProxy != null) {
-					mProxy.video(pos, rate, url);
+					mProxy.video(url, rate, pos);
 				}
 			}
 		} catch (Exception e) {

@@ -12,15 +12,9 @@ public class StopHandler extends BaseHttpHandler {
 	}
 
 	public void handle(HttpWrap hw) throws AirplayException {
-		System.out.println("head:" + hw.getRequestHeads());
 		if (mProxy != null) {
 			mProxy.videoStop();
 		}
-		response(hw);
-	}
-
-	private void response(HttpWrap hw) throws AirplayException {
-		System.out.println("response");
 		hw.sendResponseHeaders(200, 0);
 	}
 }

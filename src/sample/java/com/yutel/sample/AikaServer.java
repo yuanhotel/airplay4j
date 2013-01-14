@@ -68,7 +68,7 @@ public class AikaServer implements AikaConnectListener {
 			throws AirplayException {
 		VideoPlayer vp = new VideoPlayer();
 		vp.init();
-		System.out.println("video====" + url + ",pos");
+		System.out.println("video=" + url + ",pos=" + pos);
 	}
 
 	@Override

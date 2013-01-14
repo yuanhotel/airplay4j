@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class HttpAnaly {
-	private static Logger logger = Logger.getLogger(HttpWrap.class.getName());
+	private static Logger logger = Logger.getLogger(HttpAnaly.class.getName());
 	private final static char CR;
 	private final static char LF;
 	private final static byte[] DCRLF;
@@ -99,7 +99,6 @@ public class HttpAnaly {
 			if (tempbf == null || tempbf.length() < 1) {
 				return false;
 			}
-			logger.info("fistline=" + tempbf);
 			fistline(tempbf);
 			tempbf = in.readLine();
 			while (tempbf != null && tempbf.length() > 0) {

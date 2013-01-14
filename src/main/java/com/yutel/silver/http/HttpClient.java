@@ -1,11 +1,13 @@
 package com.yutel.silver.http;
 
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import com.yutel.silver.exception.AirplayException;
 import com.yutel.silver.http.handler.HttpHandler;
 
 public class HttpClient extends Thread {
+	private static Logger logger = Logger.getLogger(HttpClient.class.getName());
 	private Socket mSocket;
 	private AirplayServer mAirplayHttp;
 
@@ -27,7 +29,7 @@ public class HttpClient extends Thread {
 						if (handler != null) {
 							handler.handle(hw);
 						} else {
-							System.out.println("context \"" + hw.getContext()
+							logger.info("context \"" + hw.getContext()
 									+ "\" is not find!");
 						}
 					}
