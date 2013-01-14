@@ -21,13 +21,15 @@ public class HttpClient extends Thread {
 				// 读取HTTP请求信息
 				HttpWrap hw = new HttpWrap();
 				if (hw.extract(mSocket)) {
-					HttpHandler handler = mAirplayHttp.getHandler(hw
-							.getContext());
-					if (handler != null) {
-						handler.handle(hw);
-					} else {
-						System.out.println("context \"" + hw.getContext()
-								+ "\" is not find!");
+					if (hw.getContext() != null) {
+						HttpHandler handler = mAirplayHttp.getHandler(hw
+								.getContext());
+						if (handler != null) {
+							handler.handle(hw);
+						} else {
+							System.out.println("context \"" + hw.getContext()
+									+ "\" is not find!");
+						}
 					}
 				}
 				sleep(1000);

@@ -25,9 +25,9 @@ public class ServerInfoHandler extends BaseHttpHandler {
 
 	private void response(HttpWrap hw) throws AirplayException {
 		try {
-			System.out.println("response");
 			hw.getResponseHeads().put("Content-Type", "text/x-apple-plist+xml");
 			String res = AirplayUtil.getServerInfo(device);
+			System.out.println("response="+res);
 			hw.sendResponseHeaders(200, res.getBytes().length);
 			OutputStream os = hw.getResponseBody();
 			os.write(res.getBytes());
