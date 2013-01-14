@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -94,12 +95,15 @@ public class HttpWrap {
 			for (Map.Entry<String, String> item : entry.responseHeads
 					.entrySet()) {
 				entry.responseBody.write((item.getKey() + ": "
-						+ item.getValue() + "\r\n").getBytes());
+						+ item.getValue() + HttpProtocol.CRLF).getBytes());
 			}
-			entry.responseBody.write(("Content-Length: " + length + "\r\n\r\n")
+			entry.responseBody.write(("Date: "
+					+ HttpProtocol.getGMTTime(new Date()) + HttpProtocol.CRLF)
 					.getBytes());
+			entry.responseBody.write(("Content-Length: " + length
+					+ HttpProtocol.CRLF + HttpProtocol.CRLF).getBytes());
 			if (length == 0) {
-				entry.responseBody.write(("\r\n").getBytes());
+				entry.responseBody.write((HttpProtocol.CRLF).getBytes());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

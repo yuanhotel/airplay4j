@@ -1,5 +1,6 @@
 package com.yutel.silver.util;
 
+import com.yutel.silver.http.HttpProtocol;
 import com.yutel.silver.vo.Device;
 
 public class AirplayUtil {
@@ -22,23 +23,23 @@ public class AirplayUtil {
 
 	private static String serverInfo() {
 		res.setLength(0);
-		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(HttpProtocol.CRLF);
 		res.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\"");
-		res.append(" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n");
-		res.append("<plist version=\"1.0\">\r\n");
-		res.append(" <dict>\r\n");
-		res.append("  <key>deviceid</key>\r\n");
-		res.append("  <string>%1$s</string>\r\n");
-		res.append("  <key>features</key>\r\n");
-		res.append("  <integer>%2$S</integer>\r\n");
-		res.append("  <key>model</key>\r\n");
-		res.append("  <string>%3$s</string>\r\n");
-		res.append("  <key>protovers</key>\r\n");
-		res.append("  <string>%4$s</string>\r\n");
-		res.append("  <key>srcvers</key>\r\n");
-		res.append("  <string>%5$s</string>\r\n");
-		res.append(" </dict>\r\n");
-		res.append("</plist>\r\n");
+		res.append(" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">").append(HttpProtocol.CRLF);
+		res.append("<plist version=\"1.0\">").append(HttpProtocol.CRLF);
+		res.append(" <dict>").append(HttpProtocol.CRLF);
+		res.append("  <key>deviceid</key>").append(HttpProtocol.CRLF);
+		res.append("  <string>%1$s</string>").append(HttpProtocol.CRLF);
+		res.append("  <key>features</key>").append(HttpProtocol.CRLF);
+		res.append("  <integer>%2$S</integer>").append(HttpProtocol.CRLF);
+		res.append("  <key>model</key>").append(HttpProtocol.CRLF);
+		res.append("  <string>%3$s</string>").append(HttpProtocol.CRLF);
+		res.append("  <key>protovers</key>").append(HttpProtocol.CRLF);
+		res.append("  <string>%4$s</string>").append(HttpProtocol.CRLF);
+		res.append("  <key>srcvers</key>").append(HttpProtocol.CRLF);
+		res.append("  <string>%5$s</string>").append(HttpProtocol.CRLF);
+		res.append(" </dict>").append(HttpProtocol.CRLF);
+		res.append("</plist>").append(HttpProtocol.CRLF).append(HttpProtocol.CRLF);
 		return res.toString();
 	}
 

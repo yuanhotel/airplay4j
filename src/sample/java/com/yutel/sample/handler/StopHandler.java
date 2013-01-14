@@ -1,8 +1,5 @@
 package com.yutel.sample.handler;
 
-import java.util.Date;
-import java.util.Map;
-
 import com.yutel.silver.AikaProxy;
 import com.yutel.silver.exception.AirplayException;
 import com.yutel.silver.http.HttpWrap;
@@ -15,11 +12,7 @@ public class StopHandler extends BaseHttpHandler {
 	}
 
 	public void handle(HttpWrap hw) throws AirplayException {
-		Map<String, String> headers = hw.getRequestHeads();
-		for (Map.Entry<String, String> item : headers.entrySet()) {
-			System.out.println("name=" + item.getKey() + ",value="
-					+ item.getValue());
-		}
+		System.out.println("head:" + hw.getRequestHeads());
 		if (mProxy != null) {
 			mProxy.videoStop();
 		}
@@ -28,7 +21,6 @@ public class StopHandler extends BaseHttpHandler {
 
 	private void response(HttpWrap hw) throws AirplayException {
 		System.out.println("response");
-		hw.getResponseHeads().put("date", new Date().toString());
 		hw.sendResponseHeaders(200, 0);
 	}
 }

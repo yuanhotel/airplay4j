@@ -2,7 +2,6 @@ package com.yutel.sample.handler;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
 
 import com.yutel.silver.AikaProxy;
 import com.yutel.silver.exception.AirplayException;
@@ -20,11 +19,7 @@ public class ServerInfoHandler extends BaseHttpHandler {
 	}
 
 	public void handle(HttpWrap hw) throws AirplayException {
-		Map<String, String> headers = hw.getRequestHeads();
-		for (Map.Entry<String, String> item : headers.entrySet()) {
-			System.out.println("name=" + item.getKey() + ",value="
-					+ item.getValue());
-		}
+		System.out.println("head:"+hw.getRequestHeads());
 		response(hw);
 	}
 

@@ -2,6 +2,7 @@ package com.yutel.sample;
 
 import com.yutel.silver.Aika.AikaControlListener;
 import com.yutel.silver.exception.AirplayException;
+import com.yutel.silver.vo.ControlState;
 
 public class VideoPlayer implements AikaControlListener {
 
@@ -11,13 +12,21 @@ public class VideoPlayer implements AikaControlListener {
 	}
 
 	@Override
-	public void videoStop() throws AirplayException {
+	public ControlState videoStop() throws AirplayException {
 		System.out.println("viewPlayer.stop");
+		return null;
 	}
 
 	@Override
-	public void videoPause() throws AirplayException {
+	public ControlState videoPause() throws AirplayException {
 		System.out.println("viewPlayer.Pause");
+		return null;
+	}
+
+	@Override
+	public ControlState scrub() throws AirplayException {
+		System.out.println("viewPlayer.scrub");
+		return null;
 	}
 
 }

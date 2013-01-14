@@ -30,8 +30,10 @@ public class AikaServer implements AikaConnectListener {
 		// connect listener is must fist
 		mAika.setConnectListener(this);
 		// http context
-		mAika.createContext("/reverse", new ReverseHandler(mAika.getAikaProxy()));
-		mAika.createContext("/server-info", new ServerInfoHandler(mAika.getAikaProxy(),mDevice));
+		mAika.createContext("/reverse",
+				new ReverseHandler(mAika.getAikaProxy()));
+		mAika.createContext("/server-info",
+				new ServerInfoHandler(mAika.getAikaProxy(), mDevice));
 		mAika.createContext("/play", new PlayHandler(mAika.getAikaProxy()));
 		mAika.createContext("/stop", new StopHandler(mAika.getAikaProxy()));
 		// device info

@@ -1,8 +1,10 @@
 package com.yutel.silver;
 
 import com.yutel.silver.exception.AirplayException;
+import com.yutel.silver.vo.ControlState;
 
-public class AikaProxy implements Aika.AikaConnectListener, Aika.AikaControlListener {
+public class AikaProxy implements Aika.AikaConnectListener,
+		Aika.AikaControlListener {
 	private Aika.AikaConnectListener connectListener;
 	private Aika.AikaControlListener controlListener;
 
@@ -26,13 +28,13 @@ public class AikaProxy implements Aika.AikaConnectListener, Aika.AikaControlList
 	}
 
 	@Override
-	public void videoStop() throws AirplayException {
-		controlListener.videoStop();
+	public ControlState videoStop() throws AirplayException {
+		return controlListener.videoStop();
 	}
 
 	@Override
-	public void videoPause() throws AirplayException {
-		controlListener.videoPause();
+	public ControlState videoPause() throws AirplayException {
+		return controlListener.videoPause();
 	}
 
 	@Override
@@ -44,5 +46,10 @@ public class AikaProxy implements Aika.AikaConnectListener, Aika.AikaControlList
 	@Override
 	public void photo() throws AirplayException {
 		connectListener.photo();
+	}
+
+	@Override
+	public ControlState scrub() throws AirplayException {
+		return controlListener.scrub();
 	}
 }
