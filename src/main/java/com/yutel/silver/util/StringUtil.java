@@ -27,6 +27,24 @@ public final class StringUtil {
 		return 0;
 	}
 
+	public final static float toFloat(String value) {
+		try {
+			return Float.parseFloat(value);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0f;
+	}
+
+	public final static double toDouble(String value) {
+		try {
+			return Double.parseDouble(value);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	public final static int findOf(String str, String chars, int startIdx,
 			int endIdx, int offset, boolean isEqual) {
 		if (offset == 0)

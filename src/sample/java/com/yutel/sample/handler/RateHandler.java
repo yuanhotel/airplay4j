@@ -5,13 +5,12 @@ import com.yutel.silver.exception.AirplayException;
 import com.yutel.silver.http.HttpWrap;
 import com.yutel.silver.http.handler.BaseHttpHandler;
 
-public class ReverseHandler extends BaseHttpHandler {
-
-	public ReverseHandler(AikaProxy proxy) {
+public class RateHandler extends BaseHttpHandler {
+	public RateHandler(AikaProxy proxy) {
 		super(proxy);
 	}
-
 	public void handle(HttpWrap hw) throws AirplayException {
-		hw.sendResponseHeaders(101, 0);
+		hw.sendResponseHeaders(200, 0);
 	}
+
 }

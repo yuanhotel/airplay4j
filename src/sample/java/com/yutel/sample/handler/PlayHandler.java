@@ -1,6 +1,7 @@
 package com.yutel.sample.handler;
 
 import com.dd.plist.NSDictionary;
+import com.dd.plist.NSObject;
 import com.dd.plist.PropertyListParser;
 import com.yutel.silver.AikaProxy;
 import com.yutel.silver.exception.AirplayException;
@@ -26,7 +27,11 @@ public class PlayHandler extends BaseHttpHandler {
 				String url = rootDict.objectForKey("Content-Location")
 						.toString();
 				String rate = rootDict.objectForKey("rate").toString();
-				String pos = rootDict.objectForKey("Start-Position").toString();
+				String pos = "0f";
+				NSObject p = rootDict.objectForKey("Start-Position");
+				if (p != null) {
+					pos = p.toString();
+				}
 				if (mProxy != null) {
 					mProxy.video(url, rate, pos);
 				}

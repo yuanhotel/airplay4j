@@ -22,6 +22,10 @@ public class HttpWrap {
 		return entry == null ? null : entry.getContext();
 	}
 
+	public Map<String, String> getRequestParameters() {
+		return entry == null ? null : entry.getRequestParameters();
+	}
+
 	public Map<String, String> getRequestHeads() {
 		return entry == null ? null : entry.getRequestHeads();
 	}
@@ -41,8 +45,8 @@ public class HttpWrap {
 	public void sendResponseHeaders(int responseCode, int length) {
 		try {
 			String res = ha.buildResponseHeaders(responseCode, length);
+			System.out.println("res="+res);
 			entry.getResponseBody().write(res.getBytes());
-			entry.getResponseBody().flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

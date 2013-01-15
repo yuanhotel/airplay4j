@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
 public class HttpAnaly {
@@ -52,6 +53,7 @@ public class HttpAnaly {
 	public synchronized HttpEntry analy() {
 		read2CRLF();
 		if (headers()) {
+			logger.info("context=" + entry.context);
 			return entry;
 		} else {
 			return null;
@@ -70,9 +72,9 @@ public class HttpAnaly {
 				.append(CR).append(LF);
 		sb.append("Content-Length: ").append(length).append(CR).append(LF)
 				.append(CR).append(LF);
-		if (length == 0) {
-			sb.append(CR).append(LF).append(CR).append(LF);
-		}
+//		if (length == 0) {
+//			sb.append(CR).append(LF);
+//		}
 		return sb.toString();
 	}
 
@@ -118,19 +120,66 @@ public class HttpAnaly {
 		if (line != null && !"".equals(line.trim())) {
 			String[] parts = line.split(":");
 			if (parts.length == 2) {
-				getEntry().requestHeads.put(parts[0].trim(), parts[1].trim());
+				entry.requestHeads.put(parts[0].trim(), parts[1].trim());
 			}
 		}
 	}
 
 	private void fistline(String line) {
-		String[] parts = line.split(" ");
-		if (parts.length >= 2) {
-			getEntry().setMothod(parts[0]);
-			getEntry().setContext(parts[1]);
+		StringTokenizer st = new StringTokenizer(line, " ");
+		if (st.hasMoreTokens()) {
+			entry.mothod = st.nextToken();
 		}
-		if (parts.length >= 3) {
-			getEntry().setProtocol(parts[2]);
+		if (st.hasMoreTokens()) {
+			String uri = st.nextToken();
+			int qmi = uri.indexOf('?');
+			if (qmi >= 0) {
+				decodeParms(uri.substring(qmi + 1));
+				entry.context = decodePercent(uri.substring(0, qmi));
+			} else {
+				entry.context = decodePercent(uri);
+			}
+		}
+		if (st.hasMoreTokens()) {
+			entry.protocol = st.nextToken();
+		}
+	}
+
+	private void decodeParms(String parms) {
+		StringTokenizer st = new StringTokenizer(parms, "&");
+		while (st.hasMoreTokens()) {
+			String e = st.nextToken();
+			int sep = e.indexOf('=');
+			if (sep >= 0) {
+				entry.requestParameters.put(decodePercent(e.substring(0, sep))
+						.trim(), decodePercent(e.substring(sep + 1)));
+			}
+		}
+	}
+
+	private String decodePercent(String str) {
+		try {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < str.length(); i++) {
+				char c = str.charAt(i);
+				switch (c) {
+				case '+':
+					sb.append(' ');
+					break;
+				case '%':
+					sb.append((char) Integer.parseInt(
+							str.substring(i + 1, i + 3), 16));
+					i += 2;
+					break;
+				default:
+					sb.append(c);
+					break;
+				}
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -138,7 +187,7 @@ public class HttpAnaly {
 		private String context;
 		private String mothod;
 		private String protocol;
-		private Map<String, String> requestparameters = new HashMap<String, String>();
+		private Map<String, String> requestParameters = new HashMap<String, String>();
 		private Map<String, String> requestHeads = new HashMap<String, String>();
 		private Map<String, String> responseHeads = new HashMap<String, String>();
 		private volatile InputStream requestBody;
@@ -168,12 +217,12 @@ public class HttpAnaly {
 			this.protocol = protocol;
 		}
 
-		public Map<String, String> getRequestparameters() {
-			return requestparameters;
+		public Map<String, String> getRequestParameters() {
+			return requestParameters;
 		}
 
-		public void setRequestparameters(Map<String, String> requestparameters) {
-			this.requestparameters = requestparameters;
+		public void setRequestParameters(Map<String, String> requestParameters) {
+			this.requestParameters = requestParameters;
 		}
 
 		public Map<String, String> getRequestHeads() {

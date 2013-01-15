@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		try {
 			Device dev = new Device();
-			dev.setDeviceid("58:55:CA:1A:E2:88");
+			dev.setDeviceid("58:55:CA:1A:E2:44");
 			dev.setFeatures("0x277");
 			dev.setModel("AppleTV2,1");
 			dev.setProtovers("1.0");
