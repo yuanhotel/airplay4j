@@ -52,4 +52,9 @@ public class AikaProxy implements Aika.AikaConnectListener,
 	public ControlState scrub() throws AirplayException {
 		return controlListener.scrub();
 	}
+
+	@Override
+	public ControlState videoResume() throws AirplayException {
+		return controlListener.videoResume();
+	}
 }

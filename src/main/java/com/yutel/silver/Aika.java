@@ -55,6 +55,8 @@ public abstract class Aika {
 
 		public ControlState videoPause() throws AirplayException;
 
+		public ControlState videoResume() throws AirplayException;
+
 		public ControlState scrub() throws AirplayException;
 	}
 }

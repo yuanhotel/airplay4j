@@ -29,4 +29,10 @@ public class VideoPlayer implements AikaControlListener {
 		return null;
 	}
 
+	@Override
+	public ControlState videoResume() throws AirplayException {
+		System.out.println("viewPlayer.resume");
+		return null;
+	}
+
 }

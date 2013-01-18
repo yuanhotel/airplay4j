@@ -45,8 +45,10 @@ public class HttpWrap {
 	public void sendResponseHeaders(int responseCode, int length) {
 		try {
 			String res = ha.buildResponseHeaders(responseCode, length);
-			System.out.println("res="+res);
 			entry.getResponseBody().write(res.getBytes());
+			if (length <= 0) {
+				entry.getResponseBody().flush();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

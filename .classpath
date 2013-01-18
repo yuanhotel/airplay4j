@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/sample/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JMDNS"/>
 	<classpathentry kind="lib" path="lib/dd-plist.jar"/>
+	<classpathentry kind="lib" path="lib/javax.jmdns_3.4.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

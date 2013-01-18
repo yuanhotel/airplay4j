@@ -8,6 +8,7 @@ import com.yutel.silver.http.handler.HttpHandler;
 
 public class HttpClient extends Thread {
 	private static Logger logger = Logger.getLogger(HttpClient.class.getName());
+	private boolean connect = true;
 	private Socket mSocket;
 	private AirplayServer mAirplayHttp;
 
@@ -18,7 +19,7 @@ public class HttpClient extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (connect) {
 			try {
 				// 读取HTTP请求信息
 				HttpWrap hw = new HttpWrap();
@@ -32,6 +33,8 @@ public class HttpClient extends Thread {
 							logger.info("context \"" + hw.getContext()
 									+ "\" is not find!");
 						}
+					} else {
+						connect = false;
 					}
 				}
 				sleep(1000);

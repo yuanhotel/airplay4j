@@ -53,7 +53,7 @@ public class HttpAnaly {
 	public synchronized HttpEntry analy() {
 		read2CRLF();
 		if (headers()) {
-			logger.info("context=" + entry.context);
+			logger.info("context=" + entry.context+":"+mSocket.getPort());
 			return entry;
 		} else {
 			return null;
@@ -72,9 +72,6 @@ public class HttpAnaly {
 				.append(CR).append(LF);
 		sb.append("Content-Length: ").append(length).append(CR).append(LF)
 				.append(CR).append(LF);
-//		if (length == 0) {
-//			sb.append(CR).append(LF);
-//		}
 		return sb.toString();
 	}
 
