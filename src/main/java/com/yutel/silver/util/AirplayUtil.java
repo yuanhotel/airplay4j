@@ -8,9 +8,13 @@ public class AirplayUtil {
 	private final static StringBuffer res = new StringBuffer();
 	private final static String serverInfo;
 	private final static String playbackInfo;
+	private final static String playbackInfoNotReady;
+	private final static String eventInfo;
 	static {
 		serverInfo = serverInfo();
 		playbackInfo = playbackInfo();
+		playbackInfoNotReady = playbackInfoNotReady();
+		eventInfo = eventInfo();
 	}
 
 	public static void main(String[] args) {
@@ -31,7 +35,15 @@ public class AirplayUtil {
 	public static String getPlaybackInfo(ControlState cs) {
 		float duration = cs.getDuration() / 1000f;
 		float position = cs.getPosition() / 1000f;
-		return String.format(playbackInfo, duration, position,cs.getState());
+		return String.format(playbackInfo, duration, position, cs.getState());
+	}
+
+	public static String getPlaybackInfoNotReady() {
+		return playbackInfoNotReady;
+	}
+
+	public static String getEventInfo(String state) {
+		return String.format(eventInfo, state);
 	}
 
 	private static String serverInfo() {
@@ -75,8 +87,8 @@ public class AirplayUtil {
 		res.append("   <array> <dict>").append(HttpProtocol.CRLF);
 		res.append("    <key>duration</key> <real>%2$f</real>").append(
 				HttpProtocol.CRLF);
-		res.append("    <key>start</key> <real>0.0</real>")
-				.append(HttpProtocol.CRLF);
+		res.append("    <key>start</key> <real>0.0</real>").append(
+				HttpProtocol.CRLF);
 		res.append("   </dict> </array>").append(HttpProtocol.CRLF);
 
 		res.append("  <key>playbackBufferEmpty</key> <true/>").append(
@@ -87,8 +99,8 @@ public class AirplayUtil {
 				HttpProtocol.CRLF);
 		res.append("  <key>position</key> <real>%2$f</real>").append(
 				HttpProtocol.CRLF);
-		res.append("  <key>rate</key> <real>%3$d</real>")
-				.append(HttpProtocol.CRLF);
+		res.append("  <key>rate</key> <real>%3$d</real>").append(
+				HttpProtocol.CRLF);
 		res.append("  <key>readyToPlay</key> <true/>")
 				.append(HttpProtocol.CRLF);
 		res.append("  <key>seekableTimeRanges</key>").append(HttpProtocol.CRLF);
@@ -102,6 +114,40 @@ public class AirplayUtil {
 		res.append(" </dict>").append(HttpProtocol.CRLF);
 		res.append("</plist>").append(HttpProtocol.CRLF)
 				.append(HttpProtocol.CRLF);
+		return res.toString();
+	}
+
+	private static String playbackInfoNotReady() {
+		res.setLength(0);
+		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(
+				HttpProtocol.CRLF);
+		res.append(
+				"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
+				.append(HttpProtocol.CRLF);
+		res.append("<plist version=\"1.0\">").append(HttpProtocol.CRLF);
+		res.append("<dict>").append(HttpProtocol.CRLF);
+		res.append("<key>readyToPlay</key>").append(HttpProtocol.CRLF);
+		res.append("<false/>").append(HttpProtocol.CRLF);
+		res.append("</dict>").append(HttpProtocol.CRLF);
+		res.append("</plist>").append(HttpProtocol.CRLF);
+		return res.toString();
+	}
+
+	private static String eventInfo() {
+		res.setLength(0);
+		res.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(
+				HttpProtocol.CRLF);
+		res.append(
+				"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
+				.append(HttpProtocol.CRLF);
+		res.append("<plist version=\"1.0\">").append(HttpProtocol.CRLF);
+		res.append("<dict>").append(HttpProtocol.CRLF);
+		res.append("<key>category</key>").append(HttpProtocol.CRLF);
+		res.append("<string>video</string>").append(HttpProtocol.CRLF);
+		res.append("<key>state</key>").append(HttpProtocol.CRLF);
+		res.append("<string>%1$s</string>").append(HttpProtocol.CRLF);
+		res.append("</dict>").append(HttpProtocol.CRLF);
+		res.append("</plist>").append(HttpProtocol.CRLF);
 		return res.toString();
 	}
 }
