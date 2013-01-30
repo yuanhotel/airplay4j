@@ -105,6 +105,7 @@ public class AikaImpl extends Aika {
 				mJmDNS.unregisterAllServices();
 				mJmDNS.close();
 				mJmDNS = null;
+				logger.log(Level.INFO, "JmDNS stoped");
 			}
 			// http
 			if (as != null) {

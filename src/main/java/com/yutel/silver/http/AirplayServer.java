@@ -24,7 +24,6 @@ public class AirplayServer extends Thread {
 	private ServerSocket mServerSocket;
 	private Map<String, Socket> reverseResponse;
 	private int mPort;
-	private boolean stop = false;
 
 	public static void main(String[] args) {
 		new AirplayServer(8888).start();
@@ -56,7 +55,7 @@ public class AirplayServer extends Thread {
 
 	public void sendReverseResponse(String sessionid, String body) {
 		try {
-			System.out.println("EVENT:"+body);
+			System.out.println("EVENT:" + body);
 			Socket s = reverseResponse.get(sessionid);
 			if (s != null && s.isConnected()) {
 				OutputStream os = s.getOutputStream();
@@ -69,7 +68,14 @@ public class AirplayServer extends Thread {
 	}
 
 	public void forceStop() {
-		stop = true;
+		if (mServerSocket != null) {
+			try {
+				mServerSocket.close();
+				logger.log(Level.INFO, "Http Server close :" + mPort);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -77,18 +83,15 @@ public class AirplayServer extends Thread {
 		try {
 			reverseResponse = new HashMap<String, Socket>();
 			mServerSocket = new ServerSocket(mPort);
-			logger.log(Level.INFO, "Http server started listening:" + mPort);
-			while (!stop) {
-				final Socket socket = mServerSocket.accept();
+			logger.log(Level.INFO, "Http Server started listening:" + mPort);
+			while (true) {
+				Socket socket = mServerSocket.accept();
 				String ip = socket.getInetAddress().getHostAddress();
 				logger.log(Level.INFO, "client:" + ip + "/" + socket.getPort());
 				new HttpClient(socket, this).start();
 			}
-			if (stop) {
-				mServerSocket.close();
-			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.INFO, e.getMessage());
 		}
 	}
 
