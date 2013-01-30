@@ -1,7 +1,7 @@
 package com.yutel.silver;
 
 import com.yutel.silver.exception.AirplayException;
-import com.yutel.silver.vo.ControlState;
+import com.yutel.silver.vo.AirplayState;
 
 public class AikaProxy implements Aika.AikaConnectListener,
 		Aika.AikaControlListener {
@@ -26,17 +26,14 @@ public class AikaProxy implements Aika.AikaConnectListener,
 	public void setControlListener(Aika.AikaControlListener controlListener) {
 		this.controlListener = controlListener;
 	}
-
-	@Override
-	public ControlState videoStop() throws AirplayException {
-		return controlListener.videoStop();
+	
+	public void clearControlListener() {
+		controlListener = null;
 	}
 
-	@Override
-	public ControlState videoPause() throws AirplayException {
-		return controlListener.videoPause();
-	}
-
+	/**
+	 * connect
+	 */
 	@Override
 	public void video(String url, String rate, String pos)
 			throws AirplayException {
@@ -48,13 +45,58 @@ public class AikaProxy implements Aika.AikaConnectListener,
 		connectListener.photo();
 	}
 
+	/*
+	 * control
+	 */
 	@Override
-	public ControlState scrub() throws AirplayException {
-		return controlListener.scrub();
+	public void videoStop() throws AirplayException {
+		if (controlListener != null) {
+			controlListener.videoStop();
+		}
 	}
 
 	@Override
-	public ControlState videoResume() throws AirplayException {
-		return controlListener.videoResume();
+	public void videoPause() throws AirplayException {
+		if (controlListener != null) {
+			controlListener.videoPause();
+		}
+	}
+
+	@Override
+	public void videoResume() throws AirplayException {
+		if (controlListener != null) {
+			controlListener.videoResume();
+		}
+	}
+
+	@Override
+	public void videoSeek(int position) throws AirplayException {
+		if (controlListener != null) {
+			controlListener.videoSeek(position);
+		}
+	}
+
+	@Override
+	public int videoStatus() throws AirplayException {
+		if (controlListener != null) {
+			return controlListener.videoStatus();
+		}
+		return AirplayState.CACHING;
+	}
+
+	@Override
+	public int videoPostion() throws AirplayException {
+		if (controlListener != null) {
+			return controlListener.videoPostion();
+		}
+		return AirplayState.ERROR;
+	}
+
+	@Override
+	public int videoDuration() throws AirplayException {
+		if (controlListener != null) {
+			return controlListener.videoDuration();
+		}
+		return AirplayState.ERROR;
 	}
 }

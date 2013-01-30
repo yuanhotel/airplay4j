@@ -2,12 +2,6 @@ package com.yutel.sample;
 
 import java.net.InetAddress;
 
-import com.yutel.sample.handler.PlayHandler;
-import com.yutel.sample.handler.RateHandler;
-import com.yutel.sample.handler.ReverseHandler;
-import com.yutel.sample.handler.ScrubHandler;
-import com.yutel.sample.handler.ServerInfoHandler;
-import com.yutel.sample.handler.StopHandler;
 import com.yutel.silver.Aika;
 import com.yutel.silver.Aika.AikaConnectListener;
 import com.yutel.silver.exception.AirplayException;
@@ -31,15 +25,6 @@ public class AikaServer implements AikaConnectListener {
 		mAika = Aika.create(mIP, mPort, null);
 		// connect listener is must fist
 		mAika.setConnectListener(this);
-		// http context
-		mAika.createContext("/reverse",
-				new ReverseHandler(mAika.getAikaProxy()));
-		mAika.createContext("/server-info",
-				new ServerInfoHandler(mAika.getAikaProxy(), mDevice));
-		mAika.createContext("/play", new PlayHandler(mAika.getAikaProxy()));
-		mAika.createContext("/stop", new StopHandler(mAika.getAikaProxy()));
-		mAika.createContext("/rate", new RateHandler(mAika.getAikaProxy()));
-		mAika.createContext("/scrub", new ScrubHandler(mAika.getAikaProxy()));
 		// device info
 		mAika.config(mDevice);
 		mAika.start();

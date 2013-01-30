@@ -21,6 +21,7 @@ public class AikaImpl extends Aika {
 	private InetAddress mInetAddress;
 	private String mType = "_airplay._tcp.local.";
 	private String mName;
+	private Device mDevice;
 	private HashMap<String, HttpHandler> mHandlers;
 	private AikaProxy mProxy;
 	private HashMap<String, String> mConfig;
@@ -65,6 +66,7 @@ public class AikaImpl extends Aika {
 
 	@Override
 	public void config(Device device) {
+		mDevice = device;
 		mConfig = new HashMap<String, String>();
 		mConfig.put("deviceid", device.getDeviceid());
 		mConfig.put("model", device.getModel());
@@ -76,11 +78,13 @@ public class AikaImpl extends Aika {
 		try {
 			// http server
 			as = new AirplayServer(mPort);
-			as.setHandlers(mHandlers);
+			as.setProxy(this.getAikaProxy());
+			as.setDevice(mDevice);
+			// as.setHandlers(mHandlers);
 			as.start();
 			// jmdns server
 			mJmDNS = JmDNS.create(mInetAddress);
-			logger.log(Level.INFO, "oOpened JmDNS!");
+			logger.log(Level.INFO, "Opened JmDNS!");
 			ServiceInfo serviceInfo = ServiceInfo.create(mType, mName, mPort,
 					0, 0, mConfig);
 			mJmDNS.registerService(serviceInfo);

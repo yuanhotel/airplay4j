@@ -1,56 +1,137 @@
 package com.yutel.silver.http;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
-import com.yutel.silver.http.HttpAnaly.HttpEntry;
-
 public class HttpWrap {
-	private HttpEntry entry;
-	private HttpAnaly ha;
+	private int responseCode;
+	private String context;
+	private String mothod;
+	private String protocol;
+	private Map<String, String> requestParameters = new HashMap<String, String>();
+	private Map<String, String> requestHeads = new HashMap<String, String>();
+	private Map<String, String> responseHeads = new HashMap<String, String>();
+	private byte[] responseBody;
+	private boolean response;
+	private boolean reverse;
+	private String bodys;
+	private int reverseEvent;
 
-	public boolean extract(Socket socket) {
-		ha = new HttpAnaly(socket);
-		entry = ha.analy();
-		return true;
+	public String buildResponse() {
+		int length = 0;
+		if (bodys != null) {
+			length=bodys.length();
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(HttpProtocol.getResponse(responseCode));
+		for (Map.Entry<String, String> item : responseHeads.entrySet()) {
+			sb.append(item.getKey()).append(": ").append(item.getValue());
+			sb.append(HttpAnaly.CR).append(HttpAnaly.LF);
+		}
+		sb.append("Date: ").append(HttpProtocol.getGMTTime(new Date()));
+		sb.append(HttpAnaly.CR).append(HttpAnaly.LF);
+		sb.append("Content-Length: ").append(length).append(HttpAnaly.CR);
+		sb.append(HttpAnaly.LF).append(HttpAnaly.CR).append(HttpAnaly.LF);
+		if (length > 0) {
+			sb.append(bodys);
+		}
+		return sb.toString();
+	}
+
+	public int getResponseCode() {
+		return responseCode;
+	}
+
+	public void setResponseCode(int responseCode) {
+		this.responseCode = responseCode;
 	}
 
 	public String getContext() {
-		return entry == null ? null : entry.getContext();
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public String getMothod() {
+		return mothod;
+	}
+
+	public void setMothod(String mothod) {
+		this.mothod = mothod;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
 	}
 
 	public Map<String, String> getRequestParameters() {
-		return entry == null ? null : entry.getRequestParameters();
+		return requestParameters;
+	}
+
+	public void setRequestParameters(Map<String, String> requestParameters) {
+		this.requestParameters = requestParameters;
 	}
 
 	public Map<String, String> getRequestHeads() {
-		return entry == null ? null : entry.getRequestHeads();
+		return requestHeads;
+	}
+
+	public void setRequestHeads(Map<String, String> requestHeads) {
+		this.requestHeads = requestHeads;
 	}
 
 	public Map<String, String> getResponseHeads() {
-		return entry == null ? null : entry.getResponseHeads();
+		return responseHeads;
 	}
 
-	public InputStream getRequestBody() {
-		return entry == null ? null : entry.getRequestBody();
+	public void setResponseHeads(Map<String, String> responseHeads) {
+		this.responseHeads = responseHeads;
 	}
 
-	public OutputStream getResponseBody() {
-		return entry == null ? null : entry.getResponseBody();
+	public byte[] getResponseBody() {
+		return responseBody;
 	}
 
-	public void sendResponseHeaders(int responseCode, int length) {
-		try {
-			String res = ha.buildResponseHeaders(responseCode, length);
-			entry.getResponseBody().write(res.getBytes());
-			if (length <= 0) {
-				entry.getResponseBody().flush();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public void setResponseBody(byte[] responseBody) {
+		this.responseBody = responseBody;
+	}
+
+	public boolean isResponse() {
+		return response;
+	}
+
+	public void setResponse(boolean response) {
+		this.response = response;
+	}
+
+	public boolean isReverse() {
+		return reverse;
+	}
+
+	public void setReverse(boolean reverse) {
+		this.reverse = reverse;
+	}
+
+	public String getBodys() {
+		return bodys;
+	}
+
+	public void setBodys(String bodys) {
+		this.bodys = bodys;
+	}
+
+	public int getReverseEvent() {
+		return reverseEvent;
+	}
+
+	public void setReverseEvent(int reverseEvent) {
+		this.reverseEvent = reverseEvent;
 	}
 }

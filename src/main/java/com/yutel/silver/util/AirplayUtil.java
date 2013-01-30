@@ -1,7 +1,6 @@
 package com.yutel.silver.util;
 
 import com.yutel.silver.http.HttpProtocol;
-import com.yutel.silver.vo.ControlState;
 import com.yutel.silver.vo.Device;
 
 public class AirplayUtil {
@@ -32,10 +31,9 @@ public class AirplayUtil {
 				d.getModel(), d.getProtovers(), d.getSrcvers());
 	}
 
-	public static String getPlaybackInfo(ControlState cs) {
-		float duration = cs.getDuration() / 1000f;
-		float position = cs.getPosition() / 1000f;
-		return String.format(playbackInfo, duration, position, cs.getState());
+	public static String getPlaybackInfo(float duration, float position,
+			int state) {
+		return String.format(playbackInfo, duration, position, state);
 	}
 
 	public static String getPlaybackInfoNotReady() {

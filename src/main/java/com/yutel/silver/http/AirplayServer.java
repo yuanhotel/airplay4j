@@ -1,20 +1,30 @@
 package com.yutel.silver.http;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.yutel.silver.Aika;
-import com.yutel.silver.http.handler.HttpHandler;
+import com.yutel.silver.AikaProxy;
+import com.yutel.silver.vo.Device;
 
 public class AirplayServer extends Thread {
-	private static Logger logger = Logger.getLogger(Aika.class.getName());
-	private boolean stop = false;
+	private static Logger logger = Logger.getLogger(AirplayServer.class
+			.getName());
+	public int mDuration;
+	public int mPosition;
+	public int mState;
+
+	private Device mDevice;
+	private AikaProxy mProxy;
+	private ServerSocket mServerSocket;
+	private Map<String, Socket> reverseResponse;
 	private int mPort;
-	private ServerSocket ss;
-	private Map<String, HttpHandler> mHandlers;
+	private boolean stop = false;
 
 	public static void main(String[] args) {
 		new AirplayServer(8888).start();
@@ -24,15 +34,38 @@ public class AirplayServer extends Thread {
 		mPort = port;
 	}
 
-	public void setHandlers(Map<String, HttpHandler> handlers) {
-		mHandlers = handlers;
+	public Device getDevice() {
+		return mDevice;
 	}
 
-	public HttpHandler getHandler(String key) {
-		if (mHandlers != null) {
-			return mHandlers.get(key);
+	public void setDevice(Device device) {
+		mDevice = device;
+	}
+
+	public AikaProxy getProxy() {
+		return mProxy;
+	}
+
+	public void setProxy(AikaProxy mProxy) {
+		this.mProxy = mProxy;
+	}
+
+	public void addReverseResponse(String sessionid, Socket socket) {
+		reverseResponse.put(sessionid, socket);
+	}
+
+	public void sendReverseResponse(String sessionid, String body) {
+		try {
+			System.out.println("EVENT:"+body);
+			Socket s = reverseResponse.get(sessionid);
+			if (s != null && s.isConnected()) {
+				OutputStream os = s.getOutputStream();
+				os.flush();
+				os.write(body.getBytes());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return null;
 	}
 
 	public void forceStop() {
@@ -42,16 +75,17 @@ public class AirplayServer extends Thread {
 	@Override
 	public void run() {
 		try {
-			ss = new ServerSocket(mPort);
+			reverseResponse = new HashMap<String, Socket>();
+			mServerSocket = new ServerSocket(mPort);
 			logger.log(Level.INFO, "Http server started listening:" + mPort);
 			while (!stop) {
-				final Socket socket = ss.accept();
+				final Socket socket = mServerSocket.accept();
 				String ip = socket.getInetAddress().getHostAddress();
 				logger.log(Level.INFO, "client:" + ip + "/" + socket.getPort());
 				new HttpClient(socket, this).start();
 			}
 			if (stop) {
-				ss.close();
+				mServerSocket.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,12 +95,12 @@ public class AirplayServer extends Thread {
 	@Override
 	public void finalize() {
 		try {
-			if (ss != null) {
-				ss.close();
+			if (mServerSocket != null) {
+				mServerSocket.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		ss = null;
+		mServerSocket = null;
 	}
 }
